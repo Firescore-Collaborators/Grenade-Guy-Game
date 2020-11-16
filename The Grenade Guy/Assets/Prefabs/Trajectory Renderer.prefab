@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4603489158801414432}
   - component: {fileID: 4603489158801414433}
-  - component: {fileID: 4603489158801414434}
+  - component: {fileID: 220578371058481303}
   m_Layer: 0
   m_Name: Trajectory Renderer
   m_TagString: Untagged
@@ -40,7 +40,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4603489158801414435}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 2
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 0
@@ -93,33 +93,33 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.03137255, g: 0.56078434, b: 1, a: 1}
+      key0: {r: 0.03137255, g: 0.56078434, b: 1, a: 0.22352941}
       key1: {r: 0.22241008, g: 0.9245283, b: 0.9245281, a: 1}
-      key2: {r: 0.019607844, g: 0.98039216, b: 0.92156863, a: 0.6784314}
-      key3: {r: 0.019607844, g: 0.98039216, b: 0.92156863, a: 0}
+      key2: {r: 0.019607844, g: 0.98039216, b: 0.92156863, a: 1}
+      key3: {r: 0.019607844, g: 0.98039216, b: 0.92156863, a: 1}
       key4: {r: 0.007843138, g: 0.98039216, b: 0.3764706, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 386
-      ctime1: 32768
+      ctime1: 60716
       ctime2: 35273
       ctime3: 43947
       ctime4: 60524
       ctime5: 0
       ctime6: 0
       ctime7: 0
-      atime0: 0
-      atime1: 32189
-      atime2: 54548
-      atime3: 0
+      atime0: 193
+      atime1: 25250
+      atime2: 38357
+      atime3: 54548
       atime4: 0
       atime5: 0
       atime6: 0
       atime7: 0
       m_Mode: 0
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 3
+      m_NumAlphaKeys: 4
     numCornerVertices: 1
     numCapVertices: 1
     alignment: 0
@@ -128,7 +128,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &4603489158801414434
+--- !u!114 &220578371058481303
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

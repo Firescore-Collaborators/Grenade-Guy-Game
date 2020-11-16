@@ -1428,6 +1428,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e671f1bc03d161e4f862c504be57385f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
+  rotateSpeed: 10
   animator: {fileID: 6122474843355722460}
   waypoints:
   - {fileID: 0}
@@ -1444,13 +1446,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  moveSpeed: 5
-  rotateSpeed: 10
+  mouseSensitivity: 120
   grenade: {fileID: 1293943518710435422, guid: 33d902dc6bc2f3d4fa39b1f33fe4db1e, type: 3}
   diamondConfettiePrefab: {fileID: 7241034052585141942, guid: cabe632922c0c6b4da79d70b27616706,
     type: 3}
   diamond: {fileID: 0}
-  mouseSensitivity: 120
+  level2: 0
 --- !u!1 &6122474843363000694
 GameObject:
   m_ObjectHideFlags: 0

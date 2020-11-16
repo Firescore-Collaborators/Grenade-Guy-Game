@@ -167,11 +167,15 @@ MonoBehaviour:
     type: 3}
   grenadeContactEffectPrefab: {fileID: 8981313134865858321, guid: ee816d5221c1d0e46b9e0416d6e2d77b,
     type: 3}
-  trajectoryPrefab: {fileID: 4603489158801414434, guid: 21187b3ed35db654ca47a95183edb0ab,
+  trajectoryPrefab: {fileID: 220578371058481303, guid: 21187b3ed35db654ca47a95183edb0ab,
+    type: 3}
+  advancedTrajectoryPrefab: {fileID: 5283683282902063515, guid: b4a605a7f55fe77448f422637617f4fc,
+    type: 3}
+  impactPointPrefab: {fileID: 467091655915014590, guid: a0d9b2664f0d2f9469232ab09ccae8b7,
     type: 3}
   forceFactorZeroGravity: 10
   forceFactorOriginaalGravity: 24
-  bounceFactor: 1.4
+  bounceFactor: 1.7
   elapseTime: 0.2
   yDirectionTweak: 1.5
   zeroGravityTweak: -3

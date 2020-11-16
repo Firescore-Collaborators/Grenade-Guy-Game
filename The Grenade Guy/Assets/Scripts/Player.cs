@@ -29,7 +29,8 @@ public class Player : MonoBehaviour
     int end;
     Vector3 playerInititalPos;
     bool cameraFollow = false;
-   // GameObject firstPoint;
+    GameObject g;
+    // GameObject firstPoint;
     // Start is called before the first frame update
     void Start()
     {
@@ -76,12 +77,13 @@ public class Player : MonoBehaviour
         //if grenade is on level 2, spawn it at a certain positin with respect to player, otherwise at another
         //this could be done in a better way
         if (!level2)
-            pos = new Vector3(-9.57f, 1.374f, -16.44f);
+            pos = new Vector3(-9.115f, 1.374f, -16.794f);
         else
-            pos = new Vector3(5.9f, 1.374f, -0.47f);
+            pos = new Vector3(6.21f, 1.39f, -0.66f);
         var offset = pos - playerInititalPos;
         //Debug.Log(offset);
-        GameObject g = Instantiate(grenade, transform.position + offset, Quaternion.identity);
+         g = Instantiate(grenade, transform.position + offset, Quaternion.identity);
+       // transform.parent = g.transform;
     }
 
     private void Move()
@@ -100,17 +102,17 @@ public class Player : MonoBehaviour
             Vector3 dir;
 
             var targetPosition = waypoints[start].transform.position;
-            dir = targetPosition - transform.position;
+            dir = targetPosition - transform.parent.position;
             Quaternion rotation = Quaternion.LookRotation(dir);
 
             //moving towards the next waypoint
-            transform.position = Vector3.MoveTowards
-                      (transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            transform.parent.position = Vector3.MoveTowards
+                      (transform.parent.position, targetPosition, moveSpeed * Time.deltaTime);
 
             //rotating toward in the direction of running
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotateSpeed * Time.deltaTime);
+            transform.parent.rotation = Quaternion.Lerp(transform.parent.rotation, rotation, rotateSpeed * Time.deltaTime);
 
-            if (transform.position == targetPosition)
+            if (transform.parent.position == targetPosition)
             {
                 start++;
                 // iterating start pos when player has reached the current target waypoint
@@ -131,8 +133,7 @@ public class Player : MonoBehaviour
             {
                 move = false;
                 FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetFinalCameraMove();
-                GameObject diamondConfettie = Instantiate(diamondConfettiePrefab, diamond.position, Quaternion.identity);
-                Destroy(diamondConfettie, 1f);
+                StartCoroutine(InstantiateDiamond());
                 animator.SetBool("Dance", true);
             }
 
@@ -149,6 +150,16 @@ public class Player : MonoBehaviour
         
     }
 
+    public void FreezeAnimation()
+    {
+        animator.SetFloat("Speed", 0f);
+    }
+
+    public void ContinueAnimation()
+    {
+        animator.SetFloat("Speed", 1.5f);
+       // transform.parent = null;
+    }
 
     private IEnumerator InstantiateDiamond()
     {
@@ -179,16 +190,17 @@ public class Player : MonoBehaviour
 
     private void RotatePlayer()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+         xRotation -= mouseY;
+         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        //transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
-        transform.Rotate(Vector3.up * -mouseX);
-      
-       // transform.rotation = Quaternion.LookRotation(new Vector3(grenade.transform.position.x, transform.position.y, grenade.transform.position.z));
+         //transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
+         transform.parent.Rotate(Vector3.up * -mouseX);
+       
+        // transform.rotation = Quaternion.LookRotation(new Vector3(grenade.transform.position.x, transform.position.y, grenade.transform.position.z));
+       
     }
 
     public void SetGrenadeActive(bool val)
