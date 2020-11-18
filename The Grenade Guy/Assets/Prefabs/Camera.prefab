@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6758572831961788740}
-  m_LocalRotation: {x: 0.56370914, y: -0, z: -0, w: 0.8259734}
+  m_LocalRotation: {x: 0.56370634, y: 0, z: 0, w: 0.8259753}
   m_LocalPosition: {x: -9.78, y: 9.19, z: -18.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -56,9 +56,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.4
+  near clip plane: 2
   far clip plane: 1000
-  field of view: 99
+  field of view: 42
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9017255e87119b408c6eaae99f81422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 30
+  rotateSpeed: 20
+  level2: 1
   player: {fileID: 0}
-  moveSpeed: 10
-  rotateSpeed: 10
-  finalRotation: {x: 0, y: 0, z: 0, w: 0}

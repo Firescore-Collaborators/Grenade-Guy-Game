@@ -10,6 +10,8 @@ public class Grenade : MonoBehaviour
     [SerializeField] float explosionDelay = 3f;
     [SerializeField] float blastRadius = 5f;
     [SerializeField] float explosionForce = 700f;
+    [SerializeField] float extraForce = 10f;
+    [SerializeField] Vector3 enemyAngularVelocity = new Vector3(4f, -3f, 2.4f);
 
     [Header("Grenade Effects")]
     [SerializeField] GameObject explosionEffectSpikyPrefab;
@@ -30,6 +32,7 @@ public class Grenade : MonoBehaviour
     [SerializeField] float elapseTime = 0.1f;
     [SerializeField] float yDirectionTweak = 1.1f;
     [SerializeField] float zeroGravityTweak = -1f;
+    [SerializeField] float originalGravityTweak = -9.81f;
     [SerializeField] Vector3 grenadeAngularVelocity = new Vector3(4f, -3f, 2.4f);
 
     Camera camera;
@@ -39,7 +42,7 @@ public class Grenade : MonoBehaviour
     private Vector3 forceAtPlayer;
     private Rigidbody rb;
     private Vector3 originalGravity;        //gravity for Set 2 Physics
-    private Vector3 zeroGravity;             //gravity for Set 1 Physics
+    private Vector3 zeroGravity;            //gravity for Set 1 Physics
     private float forceFactor = 0f;
     private bool isZeroGrav = false;
     //float timer = 0f;
@@ -66,12 +69,13 @@ public class Grenade : MonoBehaviour
     {
         camera = FindObjectOfType<Camera>();
         rb = GetComponent<Rigidbody>();
-        originalGravity = new Vector3(0, -9.81f, 0);
+        originalGravity = new Vector3(0, originalGravityTweak, 0);
         zeroGravity = new Vector3(0, zeroGravityTweak, 0);
      
         countDown = explosionDelay;
-        cameraInitialPos = new Vector3(-9.78f, 9.19f, -14.32f);
-        grenadeinitialPos = new Vector3(-9.8f, 1.374f, -9.450001f);
+        //cameraInitialPos = new Vector3(2.86f, 19.17f, -8.0291f);
+        cameraInitialPos = new Vector3(4.2f, 19.4f, -14.4f);
+        grenadeinitialPos = new Vector3(6.397f, 1.39f, -0.66f);
         level = FindObjectOfType<Level>();
         advancedTrajectory = Instantiate(advancedTrajectoryPrefab, transform.position, Quaternion.identity);
         trajectory = Instantiate(trajectoryPrefab, transform.position, Quaternion.identity);
@@ -143,8 +147,11 @@ public class Grenade : MonoBehaviour
             {
                 //freezing current animation on the enemy in blast radius and adding
                 //an explosion force to him
+                nearbyObject.gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 nearbyObject.gameObject.GetComponent<Animator>().enabled = false;
                 rigidbody.AddExplosionForce(explosionForce, transform.position, blastRadius);
+                rigidbody.AddForce(Vector3.up * extraForce);
+                rigidbody.angularVelocity = enemyAngularVelocity;
                 level.DecrementNumEnemies();                               //decreasing the total number of enemies alive and
                                                                            // removing the enemy in blast radius from the list
                 enemyHit = true;
@@ -201,7 +208,9 @@ public class Grenade : MonoBehaviour
 
             endPos = Camera.main.ScreenToWorldPoint(
             new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-            Camera.main.nearClipPlane)) + new Vector3(0.2011909f, -8.665852f + 1.124f, 4.747328f)
+            Camera.main.nearClipPlane)) + new Vector3(-4.274607f + 6.21f, -17.75139f + 1.39f, 13.26054f + -0.66f)
+            // + new Vector3(0.2011909f, -8.665852f + 1.124f, 4.747328f)
+            //+ new Vector3(-6.292092f, -8.852413f + 1.124f, 5.332327f)
              + cameraCorrection - greandeCorrection;
 
             // + new Vector3(0.1823087f, -5.631144f + 1.124f, 7.963995f);
@@ -226,7 +235,7 @@ public class Grenade : MonoBehaviour
             }
            
         }
-
+       
         
         //Do stuff when mouse button is released
         if (Input.GetMouseButtonUp(0))
@@ -253,7 +262,7 @@ public class Grenade : MonoBehaviour
 
     IEnumerator ActualThrow()
     {
-        yield return new WaitForSeconds(0f); //waiting for the grenade toss animation to complete
+        yield return new WaitForSeconds(0.2f); //waiting for the grenade toss animation to complete
 
         //enabling the mesh renderers of all child objects of grenade
         var allChildren = GetComponentsInChildren<Transform>();

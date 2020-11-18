@@ -46,3 +46,6 @@ MonoBehaviour:
   enemies:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  level2: 1
+  destroyEnemyAfterTime: 3

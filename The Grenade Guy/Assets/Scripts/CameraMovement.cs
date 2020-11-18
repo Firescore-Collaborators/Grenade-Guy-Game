@@ -15,16 +15,23 @@ public class CameraMovement : MonoBehaviour
     public Transform player;
 
     float zPos;
+    float xPos;
     Quaternion initialRotation;
     bool move = false;
     bool finalmove = false;
     Vector3 finalPos;
-   [SerializeField]Quaternion finalRotation;
+    Quaternion finalRotation;
+
+    bool changeX = false;
+    bool moveToInitialX = true;
+    Vector3 initialPos;
     // Start is called before the first frame update
     void Start()
     {
+        initialPos = transform.position;
         initialRotation = transform.rotation;
         zPos = player.position.z;
+        xPos = player.position.x;
        // Debug.Log(zPos);
 
         //for level 1 final position and rotation for camera
@@ -37,8 +44,8 @@ public class CameraMovement : MonoBehaviour
         //for level 2 final position and rotation for camera
         else
         {
-            finalPos = new Vector3(3.24f, 2.07f, 25.7f);
-            finalRotation = Quaternion.EulerAngles(0.4f, 3.1f, 0f);
+            finalPos = new Vector3(3.07f, 2.43f, 27.67f);
+            finalRotation = Quaternion.EulerAngles(0.2f, 3.1f, 0f);
         }
     }
 
@@ -46,15 +53,58 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-       // Debug.Log(transform.rotation.ToEulerAngles());
+        //Debug.Log(transform.rotation.ToEulerAngles());
 
         //when player is running make the camera follow him aling the z axis
         if(move)
         {
-            var zcurr = player.position.z;
-            var zoff = zcurr - zPos;
-            transform.position += new Vector3(0, 0, zoff);
-            zPos = zcurr;
+            if(!changeX)
+            {
+                if(level2 && !moveToInitialX)
+                {
+                    var zcurr = player.position.z;
+                    var zoff = zcurr - zPos;
+                    transform.position += new Vector3(0, 0, zoff);
+                    zPos = zcurr;
+
+                }
+
+                else if (level2 && moveToInitialX)
+                {
+                    var xcurr = player.position.x;
+                    var zcurr = player.position.z;
+                    
+                    var xoff = xcurr - xPos;
+                    var zoff = zcurr - zPos;
+
+                    if(xcurr >= initialPos.x)
+                    {
+                        xoff = 0;
+                    }
+                    transform.position += new Vector3(xoff/3, 0, zoff);
+                    zPos = zcurr;
+                    xPos = xcurr;
+                }
+            }
+            else
+            {
+                if(level2 && !moveToInitialX)
+                {
+                    var xcurr = player.position.x;
+                    var zcurr = player.position.z;
+
+                    var xoff = xcurr - xPos;
+                    var zoff = zcurr - zPos;
+                    transform.position += new Vector3(xoff/3, 0, zoff);
+                    zPos = zcurr;
+                    xPos = xcurr;
+
+                }
+
+
+            }
+           
+
         }
 
         //lerping to the final position and rotation when player has reached the final location
@@ -67,7 +117,7 @@ public class CameraMovement : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(dir);
 
             transform.position = Vector3.MoveTowards
-                     (transform.position, finalPos, moveSpeed * Time.deltaTime);
+                    (transform.position, finalPos, moveSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, finalRotation, rotateSpeed * Time.deltaTime);
         }
     }
@@ -83,6 +133,12 @@ public class CameraMovement : MonoBehaviour
     public void SetFinalCameraMove()
     {
         finalmove = true;
+    }
+
+    public void SetChangeX(bool val)
+    {
+        changeX = val;
+        moveToInitialX = !moveToInitialX;
     }
 
 }

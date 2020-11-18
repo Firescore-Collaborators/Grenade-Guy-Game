@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 1293943518710435422}
   m_LocalRotation: {x: 0.13440445, y: 0.12284333, z: 0.066631004, w: 0.98102254}
   m_LocalPosition: {x: -9.57, y: 1.374, z: -16.44}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
   - {fileID: 5175905321701084189}
   - {fileID: 1425019730773024577}
@@ -136,7 +136,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293943518710435422}
   serializedVersion: 2
-  m_Mass: 0.0000001
+  m_Mass: 0.5
   m_Drag: 0
   m_AngularDrag: 1
   m_UseGravity: 0
@@ -174,12 +174,13 @@ MonoBehaviour:
   impactPointPrefab: {fileID: 467091655915014590, guid: a0d9b2664f0d2f9469232ab09ccae8b7,
     type: 3}
   forceFactorZeroGravity: 10
-  forceFactorOriginaalGravity: 24
+  forceFactorOriginaalGravity: 28
   bounceFactor: 1.7
   elapseTime: 0.2
   yDirectionTweak: 1.5
   zeroGravityTweak: -3
-  grenadeAngularVelocity: {x: 4, y: -3, z: 2.4}
+  originalGravityTweak: -11.39
+  grenadeAngularVelocity: {x: 6.6, y: -1, z: 4}
 --- !u!1 &3258838935862698695
 GameObject:
   m_ObjectHideFlags: 0

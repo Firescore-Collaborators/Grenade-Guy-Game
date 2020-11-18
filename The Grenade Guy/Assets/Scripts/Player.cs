@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     Vector3 playerInititalPos;
     bool cameraFollow = false;
     GameObject g;
+    bool hasReachedWaypoint4 = false;
     // GameObject firstPoint;
     // Start is called before the first frame update
     void Start()
@@ -51,7 +52,7 @@ public class Player : MonoBehaviour
         }
 
         //As soon as the animator completes the grnade toss clip, send him to standing still position
-        if(isGrenadeActive && this.animator.GetCurrentAnimatorStateInfo(0).IsName("Toss Grenade"))
+        if(isGrenadeActive && this.animator.GetCurrentAnimatorStateInfo(0).IsName("Goalie Throw"))
         {
             isGrenadeActive = false;
             animator.SetBool("Grenade Throw", isGrenadeActive);   //setting grenade throw parameter to false
@@ -79,7 +80,7 @@ public class Player : MonoBehaviour
         if (!level2)
             pos = new Vector3(-9.115f, 1.374f, -16.794f);
         else
-            pos = new Vector3(6.21f, 1.39f, -0.66f);
+            pos = new Vector3(6.397f, 1.39f, -0.66f);
         var offset = pos - playerInititalPos;
         //Debug.Log(offset);
          g = Instantiate(grenade, transform.position + offset, Quaternion.identity);
@@ -94,10 +95,23 @@ public class Player : MonoBehaviour
             FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetCamerMove();
             cameraFollow = true;
         }
-
+        
         //making the player run from start point to end point
         if(start <= end)
         {
+            if(start == 5 && !hasReachedWaypoint4 && level2)
+            {
+                hasReachedWaypoint4 = true;
+                FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(true);
+            }
+           
+            if(start == 9 && hasReachedWaypoint4 && level2)
+            {
+                hasReachedWaypoint4 = false;
+                FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(false);
+            }
+
+            
             
             Vector3 dir;
 
@@ -184,6 +198,7 @@ public class Player : MonoBehaviour
         move = true;
         this.start = start;
         this.end = end;
+        
         animator.SetBool("Run", true);
     }
 
