@@ -10,18 +10,17 @@ public class Player : MonoBehaviour
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float rotateSpeed = 10f;
     [SerializeField] Animator animator;
-    [SerializeField] List <Transform> waypoints;   //storing the waypoints where the player will go after killing
-                                                   //current enemy
+    [SerializeField] List<Transform> waypoints;   //storing the waypoints where the player will go after killing
+                                                  //current enemy
     [SerializeField] float mouseSensitivity = 150f;
 
     [Header("Others")]
     [SerializeField] GameObject grenade;
     [SerializeField] GameObject diamondConfettiePrefab;
     [SerializeField] Transform diamond;
-    [SerializeField] bool level2 = false;       
-   
-    
-    
+    [SerializeField] bool level2 = false;
+
+
     private bool isGrenadeActive = false;
     float xRotation = 0f;
     bool move = false;
@@ -36,7 +35,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         Cursor.visible = false;     //making the cursor invisible in the game screen
-        end = waypoints.Count - 1;  
+        end = waypoints.Count - 1;
         playerInititalPos = transform.position;     //initial player position
     }
 
@@ -45,28 +44,28 @@ public class Player : MonoBehaviour
     {
         //setting the "Grenade Throw" bool parameter in animator to true so that 
         // the player starts performing grenade throw animation
-        if(isGrenadeActive)
+        if (isGrenadeActive)
         {
             animator.SetBool("Grenade Throw", isGrenadeActive);
-            
+
         }
 
         //As soon as the animator completes the grnade toss clip, send him to standing still position
-        if(isGrenadeActive && this.animator.GetCurrentAnimatorStateInfo(0).IsName("Goalie Throw"))
+        if (isGrenadeActive && this.animator.GetCurrentAnimatorStateInfo(0).IsName("Goalie Throw"))
         {
             isGrenadeActive = false;
             animator.SetBool("Grenade Throw", isGrenadeActive);   //setting grenade throw parameter to false
-           
+
         }
 
         //if player isn't running between waypoints, he can rotate on y axis based on mouse movement(basically looking sideways)
         if (!move)
             RotatePlayer();
 
-        
+
         else
             Move();                       //initiate player running
-       
+
     }
 
     //spawn new grenade after the wait time is over
@@ -83,36 +82,46 @@ public class Player : MonoBehaviour
             pos = new Vector3(6.397f, 1.39f, -0.66f);
         var offset = pos - playerInititalPos;
         //Debug.Log(offset);
-         g = Instantiate(grenade, transform.position + offset, Quaternion.identity);
-       // transform.parent = g.transform;
+        g = Instantiate(grenade, transform.position + offset, Quaternion.identity);
+        // transform.parent = g.transform;
     }
 
     private void Move()
     {
-        if(!cameraFollow)
+        if (!cameraFollow)
         {
             //make camera follow the player along z axis
             FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetCamerMove();
             cameraFollow = true;
         }
-        
+
         //making the player run from start point to end point
-        if(start <= end)
+        if (start <= end)
         {
-            if(start == 5 && !hasReachedWaypoint4 && level2)
+            if (start == 5 && !hasReachedWaypoint4 && level2)
             {
                 hasReachedWaypoint4 = true;
                 FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(true);
             }
-           
-            if(start == 9 && hasReachedWaypoint4 && level2)
+
+            if (start == 9 && hasReachedWaypoint4 && level2)
             {
                 hasReachedWaypoint4 = false;
                 FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(false);
             }
 
-            
-            
+            if (start == 2 && !hasReachedWaypoint4 && !level2)
+            {
+                hasReachedWaypoint4 = true;
+                FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(true);
+            }
+
+            if (start == 3 && hasReachedWaypoint4 && !level2)
+            {
+                hasReachedWaypoint4 = false;
+                FindObjectOfType<Camera>().GetComponent<CameraMovement>().SetChangeX(false);
+            }
+
             Vector3 dir;
 
             var targetPosition = waypoints[start].transform.position;
@@ -161,7 +170,7 @@ public class Player : MonoBehaviour
                 animator.SetBool("Dance", true);
             }
         }
-        
+
     }
 
     public void FreezeAnimation()
@@ -172,7 +181,7 @@ public class Player : MonoBehaviour
     public void ContinueAnimation()
     {
         animator.SetFloat("Speed", 1.5f);
-       // transform.parent = null;
+        // transform.parent = null;
     }
 
     private IEnumerator InstantiateDiamond()
@@ -189,7 +198,7 @@ public class Player : MonoBehaviour
 
     public void SetMove(int start, int end)
     {
-        StartCoroutine(PlayerMove(start , end));
+        StartCoroutine(PlayerMove(start, end));
     }
 
     IEnumerator PlayerMove(int start, int end)
@@ -198,24 +207,24 @@ public class Player : MonoBehaviour
         move = true;
         this.start = start;
         this.end = end;
-        
+
         animator.SetBool("Run", true);
     }
 
 
     private void RotatePlayer()
     {
-         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-         xRotation -= mouseY;
-         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-         //transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
-         transform.parent.Rotate(Vector3.up * -mouseX);
-       
+        //transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
+        transform.parent.Rotate(Vector3.up * -mouseX);
+
         // transform.rotation = Quaternion.LookRotation(new Vector3(grenade.transform.position.x, transform.position.y, grenade.transform.position.z));
-       
+
     }
 
     public void SetGrenadeActive(bool val)

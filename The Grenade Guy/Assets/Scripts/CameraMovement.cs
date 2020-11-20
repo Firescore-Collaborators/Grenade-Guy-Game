@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    
+
     //Serialized fields
     [Header("Camera")]
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float rotateSpeed = 100f;
 
-    [Header("Others")]
-    [SerializeField] bool level2 = false;
+    //[Header("Others")]
+    bool level2 = false;
     public Transform player;
 
     float zPos;
@@ -28,17 +28,18 @@ public class CameraMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        level2 = FindObjectOfType<Level>().IsLevel2();
         initialPos = transform.position;
         initialRotation = transform.rotation;
         zPos = player.position.z;
         xPos = player.position.x;
-       // Debug.Log(zPos);
+        // Debug.Log(zPos);
 
         //for level 1 final position and rotation for camera
         if (!level2)
         {
-            finalPos = new Vector3(-9.78f, 2.14f, 8.39f);
-            finalRotation = Quaternion.EulerAngles(0.6f, 3.1f, 0f);
+            finalPos = new Vector3(-9.7f, 2.2f, 10f);
+            finalRotation = Quaternion.EulerAngles(0.2f, 3.1f, 0f);
         }
 
         //for level 2 final position and rotation for camera
@@ -53,14 +54,14 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log(transform.rotation.ToEulerAngles());
+        // Debug.Log(transform.rotation.ToEulerAngles());
 
         //when player is running make the camera follow him aling the z axis
-        if(move)
+        if (move)
         {
-            if(!changeX)
+            if (!changeX)
             {
-                if(level2 && !moveToInitialX)
+                if (level2 && !moveToInitialX)
                 {
                     var zcurr = player.position.z;
                     var zoff = zcurr - zPos;
@@ -73,46 +74,83 @@ public class CameraMovement : MonoBehaviour
                 {
                     var xcurr = player.position.x;
                     var zcurr = player.position.z;
-                    
+
                     var xoff = xcurr - xPos;
                     var zoff = zcurr - zPos;
 
-                    if(xcurr >= initialPos.x)
+                    if (xcurr >= initialPos.x)
                     {
                         xoff = 0;
                     }
-                    transform.position += new Vector3(xoff/3, 0, zoff);
+                    transform.position += new Vector3(xoff / 3, 0, zoff);
                     zPos = zcurr;
                     xPos = xcurr;
                 }
-            }
-            else
-            {
-                if(level2 && !moveToInitialX)
+
+                else if (!level2 && !moveToInitialX)
+                {
+                    var zcurr = player.position.z;
+                    var zoff = zcurr - zPos;
+                    transform.position += new Vector3(0, 0, zoff);
+                    zPos = zcurr;
+                }
+
+                else if (!level2 && moveToInitialX)
                 {
                     var xcurr = player.position.x;
                     var zcurr = player.position.z;
 
                     var xoff = xcurr - xPos;
                     var zoff = zcurr - zPos;
-                    transform.position += new Vector3(xoff/3, 0, zoff);
+
+                    if (xcurr >= initialPos.x)
+                    {
+                        xoff = 0;
+                    }
+                    transform.position += new Vector3(xoff * 0.9f, 0, zoff);
+                    zPos = zcurr;
+                    xPos = xcurr;
+                }
+            }
+            else
+            {
+                if (level2 && !moveToInitialX)
+                {
+                    var xcurr = player.position.x;
+                    var zcurr = player.position.z;
+
+                    var xoff = xcurr - xPos;
+                    var zoff = zcurr - zPos;
+                    transform.position += new Vector3(xoff / 3, 0, zoff);
                     zPos = zcurr;
                     xPos = xcurr;
 
                 }
 
+                else if (!level2 && !moveToInitialX)
+                {
+                    var xcurr = player.position.x;
+                    var zcurr = player.position.z;
+
+                    var xoff = xcurr - xPos;
+                    var zoff = zcurr - zPos;
+                    transform.position += new Vector3(xoff * 0.9f, 0, zoff);
+                    zPos = zcurr;
+                    xPos = xcurr;
+                }
+
 
             }
-           
+
 
         }
 
         //lerping to the final position and rotation when player has reached the final location
-        if(finalmove)
+        if (finalmove)
         {
             Vector3 dir;
 
-           // var targetPosition = waypoints[start].transform.position;
+            // var targetPosition = waypoints[start].transform.position;
             dir = finalPos - transform.position;
             Quaternion rotation = Quaternion.LookRotation(dir);
 
@@ -122,14 +160,14 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
-    
+
     public void SetCamerMove()
     {
-       
+
         move = !move;
     }
 
-    
+
     public void SetFinalCameraMove()
     {
         finalmove = true;

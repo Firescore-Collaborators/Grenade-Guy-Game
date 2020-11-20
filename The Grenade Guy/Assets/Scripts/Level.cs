@@ -22,7 +22,7 @@ public class Level : MonoBehaviour
     //Delete last enemy in the list from the list and the scene
     public void DecrementNumEnemies()
     {
-        
+
         Destroy(enemies[enemies.Count - 1], destroyEnemyAfterTime);  //destroy enemy from the scent
         enemies.RemoveAt(enemies.Count - 1);                         //remove enmy from list
         numEnemies--;                                                //decrease total number of enemies alive
@@ -46,8 +46,8 @@ public class Level : MonoBehaviour
             else
                 player.SetMove(8, 13);
         }
-            
-            
+
+
     }
 
     //get total enemies currently alive
@@ -56,5 +56,9 @@ public class Level : MonoBehaviour
         return numEnemies;
     }
 
-    
+    public bool IsLevel2()
+    {
+        return level2;
+    }
+
 }

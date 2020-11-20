@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Grenade : MonoBehaviour
-{   
+{
     //Serializing fields
     [Header("Explosion")]
     [SerializeField] float explosionDelay = 3f;
@@ -12,6 +12,10 @@ public class Grenade : MonoBehaviour
     [SerializeField] float explosionForce = 700f;
     [SerializeField] float extraForce = 10f;
     [SerializeField] Vector3 enemyAngularVelocity = new Vector3(4f, -3f, 2.4f);
+
+    /* [Header("Sounds")]
+     [SerializeField] AudioClip bounceSound;
+     [SerializeField] [Range(0, 1)] float bounceSoundVolume;*/
 
     [Header("Grenade Effects")]
     [SerializeField] GameObject explosionEffectSpikyPrefab;
@@ -34,6 +38,7 @@ public class Grenade : MonoBehaviour
     [SerializeField] float zeroGravityTweak = -1f;
     [SerializeField] float originalGravityTweak = -9.81f;
     [SerializeField] Vector3 grenadeAngularVelocity = new Vector3(4f, -3f, 2.4f);
+    // [SerializeField] bool level2 = false;
 
     Camera camera;
     Vector3 initVel;
@@ -47,12 +52,12 @@ public class Grenade : MonoBehaviour
     private bool isZeroGrav = false;
     //float timer = 0f;
     private Vector3 initialVel;
-    
+
     Vector3 pos = Vector3.zero;
     Vector3 normal;
     Vector3 finalVel;
     Vector3 oldVel = Vector3.zero;
-    
+
     private float countDown;
     private bool hasThrown = false;
     private Vector3 cameraInitialPos;
@@ -64,18 +69,30 @@ public class Grenade : MonoBehaviour
     private Vector3 reboundTrajOrijin;
     private float reboundTime;
     private GameObject impactPoint;
+    bool level2;
     // Start is called before the first frame update
     void Start()
     {
+        level2 = FindObjectOfType<Level>().IsLevel2();
         camera = FindObjectOfType<Camera>();
         rb = GetComponent<Rigidbody>();
         originalGravity = new Vector3(0, originalGravityTweak, 0);
         zeroGravity = new Vector3(0, zeroGravityTweak, 0);
-     
+
         countDown = explosionDelay;
         //cameraInitialPos = new Vector3(2.86f, 19.17f, -8.0291f);
-        cameraInitialPos = new Vector3(4.2f, 19.4f, -14.4f);
-        grenadeinitialPos = new Vector3(6.397f, 1.39f, -0.66f);
+        if (level2)
+        {
+            cameraInitialPos = new Vector3(4.2f, 19.4f, -14.4f);
+            grenadeinitialPos = new Vector3(6.397f, 1.39f, -0.66f);
+        }
+
+        else
+        {
+            cameraInitialPos = new Vector3(-10.2f, 19.4f, -31f);
+            grenadeinitialPos = new Vector3(-9.115f, 1.374f, -16.794f);
+        }
+
         level = FindObjectOfType<Level>();
         advancedTrajectory = Instantiate(advancedTrajectoryPrefab, transform.position, Quaternion.identity);
         trajectory = Instantiate(trajectoryPrefab, transform.position, Quaternion.identity);
@@ -83,21 +100,21 @@ public class Grenade : MonoBehaviour
         impactPoint.transform.rotation = Quaternion.AngleAxis(90, Vector3.right);
     }
 
-   
+
 
     private void FixedUpdate()
     {
         //Storing the previous velocity of the grenade
-        oldVel = rb.velocity; 
+        oldVel = rb.velocity;
     }
 
     private void Update()
     {
         //decreasing grenade timer. When it hits 0,
         //grenade goes kaboom :)
-        if(hasThrown)
+        if (hasThrown)
             countDown -= Time.deltaTime;
-        if(countDown <= 0f)
+        if (countDown <= 0f)
         {
             Explode();
         }
@@ -111,8 +128,8 @@ public class Grenade : MonoBehaviour
         //Instantiating all effects related to grenade explosion and destroying
         //them after they have finished doing their thing
         GameObject explosionEffectSpiky = Instantiate(
-            explosionEffectSpikyPrefab, 
-            transform.position, 
+            explosionEffectSpikyPrefab,
+            transform.position,
             transform.rotation);
         Destroy(explosionEffectSpiky, 0.3f);
 
@@ -131,19 +148,20 @@ public class Grenade : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position,
             blastRadius);                                                       //storing all coinciding colliders of gameobjects
                                                                                 //within the blast radius
-        
+
         bool enemyHit = false;                                                  //to check whether any enemy has been killed or not
 
         //iterating all colliders to get the ones who are enemy
-        foreach(Collider nearbyObject in colliders)
+        foreach (Collider nearbyObject in colliders)
         {
-            if(nearbyObject.gameObject.tag != "Enemy")
+            if (nearbyObject.gameObject.tag != "Enemy")
             {
                 continue;
             }
 
             Rigidbody rigidbody = nearbyObject.GetComponent<Rigidbody>(); //geting the rigidbody of the enemy in blast radius
-            if(rigidbody != null)
+            nearbyObject.GetComponentInChildren<Light>().enabled = false;
+            if (rigidbody != null)
             {
                 //freezing current animation on the enemy in blast radius and adding
                 //an explosion force to him
@@ -158,29 +176,29 @@ public class Grenade : MonoBehaviour
             }
         }
 
-        if(!enemyHit)
+        if (!enemyHit)
         {
             //if no enemy is injured instantiate a new greande
             FindObjectOfType<Player>().InstantiateGrenade(0.1f);
         }
         //destroy current grenade
-        Destroy(gameObject);                                               
+        Destroy(gameObject);
     }
 
-   
+
 
     private void Throw()
     {
         //if mouse gets even clicked get the start pos of grenade
         if (Input.GetMouseButtonDown(0))
         {
-            
+
             startPos = transform.position;
-           
+
         }
 
         //if mouse gets dragged the required stuff gets done
-        if (Input.GetMouseButton(0)) 
+        if (Input.GetMouseButton(0))
         {
             // Debug.Log(Mathf.Abs(forceAtPlayer.y));
 
@@ -203,15 +221,30 @@ public class Grenade : MonoBehaviour
 
             //Calculating the endposition from where the grenade will be launched
             Vector3 greandeCorrection = grenadeinitialPos - startPos;
-           // Debug.Log(greandeCorrection);
+            // Debug.Log(greandeCorrection);
             Vector3 cameraCorrection = cameraInitialPos - camera.transform.position;
-
-            endPos = Camera.main.ScreenToWorldPoint(
+            Debug.Log(level2);
+            if (level2)
+            {
+                endPos = Camera.main.ScreenToWorldPoint(
             new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-            Camera.main.nearClipPlane)) + new Vector3(-4.274607f + 6.21f, -17.75139f + 1.39f, 13.26054f + -0.66f)
-            // + new Vector3(0.2011909f, -8.665852f + 1.124f, 4.747328f)
-            //+ new Vector3(-6.292092f, -8.852413f + 1.124f, 5.332327f)
+            Camera.main.nearClipPlane)) + new Vector3(-4.274607f + 6.397f, -17.75139f + 1.39f, 13.26054f + -0.66f)
+             // + new Vector3(0.2011909f, -8.665852f + 1.124f, 4.747328f)
+             //+ new Vector3(-6.292092f, -8.852413f + 1.124f, 5.332327f)
              + cameraCorrection - greandeCorrection;
+
+            }
+
+            else
+            {
+                endPos = Camera.main.ScreenToWorldPoint(
+            new Vector3(Input.mousePosition.x, Input.mousePosition.y,
+            Camera.main.nearClipPlane)) + new Vector3(9.908546f - 9.115f, -17.99602f + 1.374f, 29.55079f - 16.794f)
+             // + new Vector3(0.2011909f, -8.665852f + 1.124f, 4.747328f)
+             //+ new Vector3(-6.292092f, -8.852413f + 1.124f, 5.332327f)
+             + cameraCorrection - greandeCorrection;
+
+            }
 
             // + new Vector3(0.1823087f, -5.631144f + 1.124f, 7.963995f);
             // new Vector3(-0.1572821f, -5.662302f + 1.124f, -7.961307f);
@@ -233,10 +266,10 @@ public class Grenade : MonoBehaviour
                 trajectory.ShowTrajectory(reboundTrajOrijin, reboundTrajSpeed.normalized * reboundTrajSpeed.magnitude / bounceFactor, reboundTime, impactPoint.transform);
 
             }
-           
+
         }
-       
-        
+
+
         //Do stuff when mouse button is released
         if (Input.GetMouseButtonUp(0))
         {
@@ -245,14 +278,15 @@ public class Grenade : MonoBehaviour
             trajectory.Dest();
             advancedTrajectory.Dest();
             Destroy(impactPoint);
-            
+
             //start the grenade toss animation
-            
+
             StartCoroutine(ActualThrow());       //the calculation of grenade throw physics
-           
+
         }
+
     }
-    
+
     public void SetReboundTrajectoryParm(Vector3 reboundTrajOrijin, Vector3 reboundTrajSpeed, float reboundTime)
     {
         this.reboundTrajSpeed = reboundTrajSpeed;
@@ -266,7 +300,7 @@ public class Grenade : MonoBehaviour
 
         //enabling the mesh renderers of all child objects of grenade
         var allChildren = GetComponentsInChildren<Transform>();
-        foreach(Transform child in allChildren)
+        foreach (Transform child in allChildren)
         {
             if (child.gameObject.GetComponent<MeshRenderer>())
             {
@@ -312,23 +346,26 @@ public class Grenade : MonoBehaviour
             Vector3 normal = collision.contacts[0].normal;  //calculating the normal at collision point
             var direction = Vector3.Reflect(oldVel.normalized, normal);  //calculating the rebound direction based on previous
                                                                          //velocity of grenade just before collision & normal
-            //To visulise the path of the grenade on collision with anything
-           /* var pointC = p + direction.normalized * 10;
-            Debug.DrawRay(collision.contacts[0].point, oldVel.normalized, Color.blue, 10, false);      //direction of grende just before collision
-            Debug.DrawRay(collision.contacts[0].point, collision.contacts[0].normal, Color.green, 10, false); //direction of normal at collision point
-            Debug.DrawRay(collision.contacts[0].point, direction.normalized, Color.red, 10, false);*/   //rebound direction of grenade after collision
+                                                                         //To visulise the path of the grenade on collision with anything
+                                                                         /* var pointC = p + direction.normalized * 10;
+                                                                          Debug.DrawRay(collision.contacts[0].point, oldVel.normalized, Color.blue, 10, false);      //direction of grende just before collision
+                                                                          Debug.DrawRay(collision.contacts[0].point, collision.contacts[0].normal, Color.green, 10, false); //direction of normal at collision point
+                                                                          Debug.DrawRay(collision.contacts[0].point, direction.normalized, Color.red, 10, false);*/   //rebound direction of grenade after collision
 
-           //decresing the magnitude of grenade's velocity at every collision by a factor of bounceFactor
-           initialVel = rb.velocity = direction.normalized * initialVel.magnitude / bounceFactor;
+            //decresing the magnitude of grenade's velocity at every collision by a factor of bounceFactor
+            initialVel = rb.velocity = direction.normalized * initialVel.magnitude / bounceFactor;
 
             //Instantiating grenade collision effect and destroying it after its done doing its shit
-           GameObject grenadeContactEffect = Instantiate(grenadeContactEffectPrefab, transform.position, Quaternion.identity);
+            GameObject grenadeContactEffect = Instantiate(grenadeContactEffectPrefab, transform.position, Quaternion.identity);
+            //  AudioSource.PlayClipAtPoint(bounceSound, Camera.main.transform.position, bounceSoundVolume);
+            //  bounceSoundVolume *= 0.8f;
+
             Destroy(grenadeContactEffect, 1f);
-           
+
         }
     }
-    
-    
+
+
 }
 
 
