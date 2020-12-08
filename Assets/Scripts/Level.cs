@@ -10,7 +10,8 @@ public class Level : MonoBehaviour
     [SerializeField] bool level2 = false;
     [SerializeField] float destroyEnemyAfterTime = 3f;
 
-    int numEnemies;
+    public GameObject canvas;
+  public   int numEnemies;
     Player player;
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,15 @@ public class Level : MonoBehaviour
         }
 
 
+        if(numEnemies <= 0)
+        {
+            Invoke("Win", 5f);
+        }
+    }
+
+    public void Win()
+    {
+        canvas.SetActive(true);
     }
 
     //get total enemies currently alive
@@ -59,6 +69,11 @@ public class Level : MonoBehaviour
     public bool IsLevel2()
     {
         return level2;
+    }
+    public void NextLevel(int k)
+    {
+        Application.LoadLevel(k);
+       
     }
 
 }
