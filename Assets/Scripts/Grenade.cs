@@ -223,7 +223,7 @@ public class Grenade : MonoBehaviour
             Vector3 greandeCorrection = grenadeinitialPos - startPos;
             // Debug.Log(greandeCorrection);
             Vector3 cameraCorrection = cameraInitialPos - camera.transform.position;
-            Debug.Log(level2);
+            //Debug.Log(level2);
             if (level2)
             {
                 endPos = Camera.main.ScreenToWorldPoint(
